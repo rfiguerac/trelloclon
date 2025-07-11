@@ -1,2 +1,9 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+body {
+  @apply bg-base-200;
+  @apply min-h-screen;
+  @apply bg-gradient-to-br from-blue-500 to-purple-600
+
+}
