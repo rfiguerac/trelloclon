@@ -1,29 +1,29 @@
 // Column.tsx
 import { useDrop } from "react-dnd";
 
-import type { Task, Status } from "./Board";
+import type { Task } from "../interface/BoardInterface";
 import { Card } from "./Card";
 
 interface ColumnProps {
   title: string;
-  status: Status;
+  columnId: string;
   tasks: Task[];
-  moveTask: (id: string, newStatus: Status) => void;
+  moveTask: (id: string, newColumnId: string) => void;
 }
 
-export const Column = ({ title, status, tasks, moveTask }: ColumnProps) => {
+export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
 
     
 
   const [{ isOver }, drop] = useDrop({
     accept: "CARD",
-    drop: (item: { id: string }) => moveTask(item.id, status),
+    drop: (item: { id: string }) => moveTask(item.id, columnId),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   });
 
-  const filteredTasks = tasks.filter((task) => task.status === status);
+  const filteredTasks = tasks.filter((task) => String(task.columnId) === String(columnId));
 
   const lightBg = isOver ? "bg-blue-100" : "bg-base-300";
 

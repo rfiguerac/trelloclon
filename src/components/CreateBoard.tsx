@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Board } from "../interface/BoardInterface";
+import { useBoard } from "../hooks/useBoard";
 
 interface CreateBoardProps {
   handleAddBoard: () => void;
@@ -10,10 +11,15 @@ export const CreateBoard = ({
   handleAddBoard,
   setBoards,
 }: CreateBoardProps) => {
+  
+  
   const [newBoard, setNewBoard] = useState({
     title: "",
     description: "",
   });
+
+  const {createBoard} = useBoard();
+
 
   const [error, setError] = useState("");
 
@@ -28,17 +34,22 @@ export const CreateBoard = ({
     }
   };
 
-  const handleCreateBoard = (e: React.FormEvent) => {
+  const handleCreateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newBoard.title.trim().length < 3) {
       setError("El título debe tener al menos 3 caracteres.");
       return;
     }
 
+    const data = await createBoard({
+      Title: newBoard.title,
+      description: newBoard.description || "Sin descripción",
+    });
+
     setBoards((prevBoards) => [
       ...prevBoards,
       {
-        id: (Math.random() * 1000).toString(),
+        id: data.id,
         title: newBoard.title,
         description: newBoard.description || "Sin descripción",
       },

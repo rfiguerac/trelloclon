@@ -2,23 +2,18 @@ import { useEffect, useState } from "react";
 import { CardBoard } from "../components/CardBoard";
 import { CreateBoard } from "../components/CreateBoard";
 import type { Board } from "../interface/BoardInterface";
+import { useBoard } from "../hooks/useBoard";
 
 export const PrincipalPage = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [showCreateBoard, setShowCreateBoard] = useState(false);
 
+  const {getAllBoards} = useBoard();
 
-  const fetchBoards = () => {
-    const boardData: Board[] = [
-      { id: "1", title: "Tablero 1", description: "Descripción del Tablero 1" },
-      { id: "2", title: "Tablero 2", description: "Descripción del Tablero 2" },
-      { id: "3", title: "Tablero 3", description: "Descripción del Tablero 3" },
-      { id: "4", title: "Tablero 4", description: "Descripción del Tablero 4" },
-      { id: "5", title: "Tablero 5", description: "Descripción del Tablero 5" },
-      { id: "6", title: "Tablero 6", description: "Descripción del Tablero 6" },
-      { id: "7", title: "Tablero 7", description: "Descripción del Tablero 7" },
-    ];
+ 
+  const fetchBoards = async() => {
     try {
+      const boardData = await getAllBoards();
       setBoards(boardData);
     } catch (error) {
       console.log(error);
