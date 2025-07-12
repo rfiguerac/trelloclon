@@ -7,6 +7,7 @@ export const PrincipalPage = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [showCreateBoard, setShowCreateBoard] = useState(false);
 
+
   const fetchBoards = () => {
     const boardData: Board[] = [
       { id: "1", title: "Tablero 1", description: "Descripción del Tablero 1" },
@@ -31,6 +32,7 @@ export const PrincipalPage = () => {
   const handleAddBoard = () => {
      setShowCreateBoard((prev) => !prev);
   };
+  
 
   return (
     <>

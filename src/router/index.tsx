@@ -3,6 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { MainLayout } from "../layouts/MainLayout";
 import { PrincipalPage } from "../pages/PrincipalPage";
+import { BoardPage } from "../pages/BoardPage";
+
 
 
 export const router = createBrowserRouter([
@@ -11,6 +13,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <PrincipalPage /> },
+      {path: "board/:id", element: <BoardPage /> },
     ],
   },
 ]);
