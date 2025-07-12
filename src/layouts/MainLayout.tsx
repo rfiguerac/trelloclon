@@ -1,15 +1,16 @@
-
-import { Outlet } from 'react-router-dom'
-import { Navbar } from '../components/Navbar'
+import { Outlet } from "react-router-dom";
+import { Navbar } from "../components/Navbar";
 
 export const MainLayout = () => {
   return (
-    <div className="container mx-auto p-10 place-items-center">
+    <div className="place-items-center bg-transparent">
+      <main className="container mx-auto pt-8">
         <Navbar />
 
-        <div className='container'>
-            <Outlet />
+        <div className="container">
+          <Outlet />
         </div>
+      </main>
     </div>
-  )
-}
+  );
+};
