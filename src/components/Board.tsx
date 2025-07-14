@@ -67,8 +67,6 @@ useEffect(() => {
 
   const filteredColumns = columns.filter((column) => column.boardId === String(selectedBoard.Id));
 
-
-
   return (
     <DndProvider backend={HTML5Backend}>
     
