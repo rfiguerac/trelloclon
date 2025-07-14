@@ -47,11 +47,11 @@ useEffect(() => {
 
   const moveTask = (id: string, newColumnId: string) => {
 
-    const taskToUpdate = tasks.find((task) => task.id === id);
+    const taskToUpdate = tasks.find((task) => task.Id === id);
 
     const response = handleUpdateTask({
-      Id: taskToUpdate?.id,
-      Title: taskToUpdate?.title,
+      Id: taskToUpdate?.Id,
+      Title: taskToUpdate?.Title,
       columnId: newColumnId,
     });
 
@@ -59,13 +59,13 @@ useEffect(() => {
 
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id ? { ...task, columnId: newColumnId } : task
+        task.Id === id ? { ...task, columnId: newColumnId } : task
       )
     );
   };
 
 
-  const filteredColumns = columns.filter((column) => column.boardId === String(selectedBoard.id));
+  const filteredColumns = columns.filter((column) => column.boardId === String(selectedBoard.Id));
 
 
 
@@ -76,9 +76,9 @@ useEffect(() => {
         {
             filteredColumns.map((column) => (
                 <Column
-                key={column.id}
-                title={column.title}
-                columnId={column.id}
+                key={column.Id}
+                title={column.Title}
+                columnId={column.Id}
                 tasks={tasks}
                 moveTask={moveTask}
                 />

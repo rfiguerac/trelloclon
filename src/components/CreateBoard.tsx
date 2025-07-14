@@ -49,8 +49,8 @@ export const CreateBoard = ({
     setBoards((prevBoards) => [
       ...prevBoards,
       {
-        id: data.id,
-        title: newBoard.title,
+        Id: data.Id,
+        Title: newBoard.title,
         description: newBoard.description || "Sin descripción",
       },
     ]);

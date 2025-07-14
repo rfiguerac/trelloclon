@@ -44,9 +44,9 @@ export const PrincipalPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {boards.map((board) => (
               <CardBoard
-                key={board.id}
-                id={board.id}
-                title={board.title}
+                key={board.Id}
+                Id={board.Id}
+                Title={board.Title}
                 description={board.description}
               />
             ))}

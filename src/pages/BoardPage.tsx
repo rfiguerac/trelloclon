@@ -8,11 +8,11 @@ export const BoardPage = () => {
     <div>
       <div className="card bg-base-100 shadow-sm min-h-[60vh] opacity-90">
         <div className="card-body">
-          {selectedBoard.title.length ? (
+          {selectedBoard.Title.length ? (
             <>
               <div className="flex justify-between items-center py-6 md:pl-4 md:pr-4">
                 <h2 className="card-title text-2xl md:text-3xl">
-                  {selectedBoard.title}
+                  {selectedBoard.Title}
                 </h2>
                 <button className="btn btn-outline btn-xs btn-primary text-xl py-6">
                   + Agregar Lista

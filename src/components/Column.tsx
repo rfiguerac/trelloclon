@@ -37,7 +37,7 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
         className={`w-1/4 p-4 rounded-lg shadow-md min-h-[300px] ${lightBg} flex flex-col justify-between`}>
         <h2 className="text-xl font-bold mb-4">{title}</h2>
         {filteredTasks.map((task) => (
-          <Card key={task.id} id={task.id} title={task.title} />
+          <Card key={task.Id} id={task.Id} title={task.Title} />
         ))}
         <div className="mt-4 ">
           <button className="btn btn-primary btn-sm w-full">+ Agregar tarea</button>

@@ -86,7 +86,7 @@ export const useColumn = () => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error("Error al eliminar el alumno");
+        throw new Error("Error al eliminar la columna");
       })
       .catch((err) => console.log(err));
     

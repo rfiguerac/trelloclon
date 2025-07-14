@@ -12,8 +12,8 @@ const BoardContext = createContext<BoardContextType | undefined>(undefined);
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
 
     const initialBoards: Board = {
-        id: "",
-        title: "",
+        Id: "",
+        Title: "",
         description: "",
     };
   const [selectedBoard, setSelectedBoard] = useState<Board>(initialBoards);

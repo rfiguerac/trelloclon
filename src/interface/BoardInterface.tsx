@@ -1,18 +1,18 @@
 
 export interface Board {
-  id: string;
-  title: string;
+  Id: string;
+  Title: string;
   description: string;
 }
 
 export interface Column {
-  id: string;
-  title: string;
+  Id: string;
+  Title: string;
   boardId: string;
 }
 
 export interface Task {
-  id: string;
-  title: string;
+  Id: string;
+  Title: string;
   columnId: string;
 }
