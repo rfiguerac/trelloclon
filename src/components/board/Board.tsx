@@ -8,6 +8,7 @@ import { useColumn } from "../../hooks/useColumn";
 import { useSelecedBoard } from "../../contexts/BoardContext";
 import { useTask } from "../../hooks/useTask";
 import { CreateColumn } from "../column/CreateColumn";
+import { Alert } from "../Alert";
 
 interface BoardProps {
   showCreateColumn: boolean;
@@ -22,6 +23,16 @@ const [columns, setColumns] = useState<Columnas[]>([]);
 const [filteredColumns, setFilteredColumns] = useState<Columnas[]>([]);
 const {getAllColumn} = useColumn();
 const { updateTask } = useTask();
+
+const [showAlert, setShowAlert] = useState(false);
+const [alertMessage, setAlertMessage] = useState("");
+
+const handleMessage = () => {
+  setAlertMessage("Columna Agreda.");
+  setShowAlert(true);
+  setTimeout(() => setShowAlert(false), 3000);
+};
+
 
 const fetchColumns = async () => {
     const columnData = await getAllColumn();
@@ -40,6 +51,7 @@ useEffect(() => {
 }, []);
 
 const addColumn = (newColumn: Columnas) => {
+  handleMessage();
   setColumns((prev) => [...prev, newColumn]);
   setFilteredColumns((prev) => [...prev, newColumn]);
 }
@@ -115,7 +127,7 @@ const addColumn = (newColumn: Columnas) => {
 
     </DndProvider>
       {showCreateColumn && <CreateColumn handleAddColumn={handleAddColumn} addColumn={addColumn}/>}
-
+      {showAlert && <Alert message={alertMessage} type="success" />}
 </>
   );
 };

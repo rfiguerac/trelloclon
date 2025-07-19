@@ -19,9 +19,8 @@ export const CreateBoard = ({
   });
 
   const {createBoard} = useBoard();
-
-
   const [error, setError] = useState("");
+  
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

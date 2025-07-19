@@ -6,6 +6,7 @@ import { Card } from "../task/Card";
 import { useEffect, useState } from "react";
 import { useTask } from "../../hooks/useTask";
 import { CreateTask } from "../task/CreateTask";
+import { Alert } from "../Alert";
 
 
 interface ColumnProps {
@@ -22,6 +23,15 @@ const {createTask} = useTask();
 
 const [showCreateTask, setShowCreateTask] = useState(false);
 const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+
+const [showAlert, setShowAlert] = useState(false);
+const [alertMessage, setAlertMessage] = useState("");
+
+const handleMessage = () => {
+  setAlertMessage("task Agreda.");
+  setShowAlert(true);
+  setTimeout(() => setShowAlert(false), 3000);
+};
   
 const addTask = async (newTask: Task) => {
 
@@ -29,6 +39,7 @@ const addTask = async (newTask: Task) => {
       Title: newTask.Title!,
       columnId: columnId,
     });
+    handleMessage();
   setFilteredTasks((prev) => [...prev, { 
     Id: data.Id,
     Title: newTask.Title!,
@@ -79,6 +90,7 @@ const handleAddTask = () => {
       {showCreateTask && (
         <CreateTask
           handleAddTask={handleAddTask} addTask={addTask} selectedColumn={{ Id: columnId }}/>)}
+          {showAlert && <Alert message={alertMessage} type="success" />}
     </>
   );
 };
