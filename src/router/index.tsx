@@ -6,7 +6,6 @@ import { PrincipalPage } from "../pages/PrincipalPage";
 import { BoardPage } from "../pages/BoardPage";
 
 
-
 export const router = createBrowserRouter([
   {
     path: "/",

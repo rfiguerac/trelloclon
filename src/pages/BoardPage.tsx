@@ -1,10 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Board } from "../components/board/Board";
 import { useSelecedBoard } from "../contexts/BoardContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const BoardPage = () => {
   const { selectedBoard } = useSelecedBoard();
+  const  navigate  = useNavigate();
+
+  if (!selectedBoard.Id) {
+    navigate("/");
+  }
 
   const [showCreateColumn, setShowCreateColumn] = useState(false);
 
@@ -12,12 +17,18 @@ export const BoardPage = () => {
     setShowCreateColumn((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (!selectedBoard.Id) {
+      navigate("/");
+    }
+  }, [])
+  
+
   return (
     <div>
       <div className="card bg-base-100 shadow-sm min-h-[60vh] opacity-90">
         <div className="card-body">
-          {selectedBoard.Title.length ? (
-            <>
+
               <div className="flex flex-col md:flex-row md:justify-between md:items-center py-6 md:pl-4 md:pr-4">
                 <div className="flex justify-between items-center w-full mb-4 md:mb-0">
                   <Link
@@ -59,19 +70,6 @@ export const BoardPage = () => {
                   handleAddColumn={handleAddColumn}
                 />
               </div>
-            </>
-          ) : (
-            <div>
-              <p className="text-center text-gray-500 text-2xl font-bold">
-                Selecciona un tablero para comenzar
-              </p>
-              <Link
-                to={"/"}
-                className="btn btn-outline btn-xs btn-primary text-xl py-6">
-                Volver a la página principal
-              </Link>
-            </div>
-          )}
         </div>
       </div>
     </div>
