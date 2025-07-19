@@ -71,7 +71,9 @@ const handleAddTask = () => {
           <Card key={task.Id} id={task.Id} title={task.Title} />
         ))}
         <div className="mt-4 ">
-          <button onClick={handleAddTask} className="btn btn-primary btn-sm w-full">+ Agregar tarea</button>
+          <button onClick={handleAddTask} className="btn btn-primary btn-lg w-full text-lg">
+            + Agregar tarea
+            </button>
       </div>
         </div>
       {showCreateTask && (

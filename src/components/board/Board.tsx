@@ -65,6 +65,9 @@ const addColumn = (newColumn: Columnas) => {
       columnId: newColumnId,
     });
 
+    // todo: agregar aviso al usuario
+    console.log(response);
+
 
     setTasks((prev) =>
       prev.map((task) =>
