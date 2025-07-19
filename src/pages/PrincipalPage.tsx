@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { CardBoard } from "../components/CardBoard";
-import { CreateBoard } from "../components/CreateBoard";
+import { CardBoard } from "../components/board/CardBoard";
+import { CreateBoard } from "../components/board/CreateBoard";
 import type { Board } from "../interface/BoardInterface";
 import { useBoard } from "../hooks/useBoard";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Board } from "../interface/BoardInterface";
-import { useBoard } from "../hooks/useBoard";
+import type { Board } from "../../interface/BoardInterface";
+import { useBoard } from "../../hooks/useBoard";
 
 interface CreateBoardProps {
   handleAddBoard: () => void;
@@ -57,14 +57,11 @@ export const CreateBoard = ({
     handleAddBoard();
   };
 
-  return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-base-100 rounded-lg p-8 shadow-2xl w-full max-w-md transform scale-100 transition-all duration-300 ease-out">
-        <h3 className="text-2xl font-bold mb-6 text-center">
-          Crear Nuevo Tablero
-        </h3>
-        <form>
-          <div className="mb-4">
+  return(
+    <dialog open className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Crear Nuevo Tablero</h3>
+                      <div className="mb-4">
             <label
               htmlFor="boardTitle"
               className="block text-sm font-semibold mb-2">
@@ -107,8 +104,10 @@ export const CreateBoard = ({
                 })
               }></textarea>
           </div>
-          <div className="flex justify-end space-x-4">
-            <button
+            
+
+            <div className="modal-action">
+              <button
               onClick={handleAddBoard}
               className="btn btn-outline btn-xs btn-secondary text-xl py-6">
               Cancelar
@@ -118,9 +117,9 @@ export const CreateBoard = ({
               className="btn btn-outline btn-xs btn-primary text-xl py-6">
               Crear tablero
             </button>
+            </div>
           </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+        </dialog>
+  )
+
+}

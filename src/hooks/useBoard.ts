@@ -1,3 +1,4 @@
+import { localBoardRepository } from "../data/localDataBoardRepository";
 import { nocoBoardRepository } from "../data/nocoBoardRepository";
 import type { Board } from "../interface/BoardInterface";
 import type { BoardRepository } from "../interface/BoardRepository";

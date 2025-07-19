@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import type { Board } from "../interface/BoardInterface";
-import { useSelecedBoard } from "../contexts/BoardContext";
+import type { Board } from "../../interface/BoardInterface";
+import { useSelecedBoard } from "../../contexts/BoardContext";
 
 
 export const CardBoard = (board: Board) => {

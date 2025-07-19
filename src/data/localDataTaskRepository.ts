@@ -6,22 +6,40 @@ import type { TaskRepository } from "../interface/TaskRepository";
 const urlApi = "https://app.nocodb.com/api/v2/tables/mn1qk0vl2y2xxdc/records";
 const token = "ze-hQCYQLixSb3jXFSoKUnspjD2DQIn-wDOb3DWk";
 
-export const nocoTaskRepository: TaskRepository = {
+export const localTaskRepository: TaskRepository = {
   getAllTasks: async function (): Promise<Task[]> {
-    const opciones = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "xc-token": token,
+    
+    const tasks: Task[] = [
+      {
+        Id: "1",
+        Title: "Tarea de Ejemplo",
+        columnId: "1",
       },
-    };
-    const response = await fetch(urlApi, opciones);
-    if (!response.ok) {
-      throw new Error("Error al obtener los tableros");
-    }
-    const data = await response.json();
-    const task: Task[] = data.list;
-    return task;
+
+      {
+        Id: "2",
+        Title: "Otra Tarea",
+        columnId: "2",
+      },
+      {
+        Id: "3",
+        Title: "Tarea de Proyecto",
+        columnId: "2",
+      },
+
+      {
+        Id: "4",
+        Title: "Tarea de Desarrollo",
+        columnId: "1",
+      },
+      {
+        Id: "5",
+        Title: "Tarea de Desarrollor large text, Tarea de Desarrollor large text",
+        columnId: "1",
+      }
+
+    ]
+    return tasks;
   },
   createTask: async function (task: Partial<Task>): Promise<Task> {
     const opciones = {

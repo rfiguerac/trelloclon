@@ -1,9 +1,19 @@
 import { Link } from "react-router-dom";
-import { Board } from "../components/Board";
+import { Board } from "../components/board/Board";
 import { useSelecedBoard } from "../contexts/BoardContext";
+import { useState } from "react";
 
 export const BoardPage = () => {
   const { selectedBoard } = useSelecedBoard();
+
+  const [showCreateColumn, setShowCreateColumn] = useState(false);
+
+
+  const handleAddColumn = () => {
+    setShowCreateColumn((prev) => !prev);
+  }
+
+
   return (
     <div>
       <div className="card bg-base-100 shadow-sm min-h-[60vh] opacity-90">
@@ -14,18 +24,22 @@ export const BoardPage = () => {
                 <h2 className="card-title text-2xl md:text-3xl">
                   {selectedBoard.Title}
                 </h2>
-                <button className="btn btn-outline btn-xs btn-primary text-xl py-6">
+                <button onClick={handleAddColumn} className="btn btn-outline btn-xs btn-primary text-xl py-6">
                   + Agregar Lista
                 </button>
               </div>
-              <Board />
+              <div className="overflow-x-auto">
+                <Board showCreateColumn={showCreateColumn} handleAddColumn={handleAddColumn}/>
+              </div>
             </>
           ) : (
             <div>
               <p className="text-center text-gray-500 text-2xl font-bold">
                 Selecciona un tablero para comenzar
               </p>
-              <Link to={"/"} className="btn btn-outline btn-xs btn-primary text-xl py-6">
+              <Link
+                to={"/"}
+                className="btn btn-outline btn-xs btn-primary text-xl py-6">
                 Volver a la página principal
               </Link>
             </div>
