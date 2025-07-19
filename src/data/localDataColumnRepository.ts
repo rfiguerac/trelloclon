@@ -1,104 +1,49 @@
-
 import type { Column } from "../interface/BoardInterface";
 import type { ColumnRepository } from "../interface/ColumnRepository";
 
-const urlApi = "https://app.nocodb.com/api/v2/tables/mfdcltn6coaaxlo/records";
-  const token = "ze-hQCYQLixSb3jXFSoKUnspjD2DQIn-wDOb3DWk";
-  
+// Simulación local en memoria
+let columns: Column[] = [
+  { Id: "1", Title: "Columna de Ejemplo", boardId: "1" },
+  { Id: "2", Title: "Otra Columna", boardId: "1" },
+  { Id: "3", Title: "Columna de Tareas", boardId: "1" },
+  { Id: "4", Title: "Columna de Proyectos", boardId: "1" },
+];
+
+let columnIdCounter = columns.length + 1;
+
 export const localColumnRepository: ColumnRepository = {
-    
-    getAllColumn: async function (): Promise<Column[]> {
+  getAllColumn: async function (): Promise<Column[]> {
+    return columns;
+  },
 
-       const column: Column[] = [
-        {
-            Id: "1",
-            Title: "Columna de Ejemplo",
-            boardId: "1",
-        },
-        {
-            Id: "2",
-            Title: "Otra Columna",
-            boardId: "1",
-        },
-        {
-            Id: "3",
-            Title: "Columna de Tareas",
-            boardId: "1",
-        },
-        {
-            Id: "4",
-            Title: "Columna de Proyectos",
-            boardId: "1",
-        }
+  createColumn: async function (column: Partial<Column>): Promise<Column> {
+    const newColumn: Column = {
+      Id: String(columnIdCounter++),
+      Title: column.Title ?? "Sin título",
+      boardId: column.boardId ?? "1",
+    };
+    return newColumn;
+  },
 
+  updateColumn: async function (column: Partial<Column>): Promise<Column | null> {
+    if (!column.Id) return null;
 
-       ]
-    return column;
+    const index = columns.findIndex((c) => c.Id === column.Id);
+    if (index === -1) return null;
 
-
-    },
-    createColumn: async function (column:Partial<Column>): Promise<Column> {
-        const opciones = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(column),
+    columns[index] = {
+      ...columns[index],
+      ...column,
     };
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      const newColumn = {...column, Id: datos.Id};
-      return newColumn as Column;
+    return columns[index];
+  },
 
-    } catch (error) {
-      console.log(error);
-        return column as Column;
-    }
-    },
-    updateColumn: async function (column: Partial<Column>): Promise<Column | null> {
-        const opciones = {
-      method: "PATCH",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(column),
-    };
+  deleteColumn: async function (columnId: string): Promise<string> {
+    const index = columns.findIndex((c) => c.Id === columnId);
+    if (index === -1) throw new Error("Columna no encontrada");
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      return datos.Id;
-
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-    },
-    deleteColumn: async function (boardId: string): Promise<string> {
-        const opciones = {
-      method: "DELETE",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify({ Id: boardId }),
-    };
-
-    try {
-        const resp = await fetch(urlApi, opciones);
-        const datos = await resp.json();
-        return datos.Id;
-    } catch (error) {
-        console.log(error);
-        throw new Error("Error al eliminar la board");
-    }
-        
-    }
-}
+    columns.splice(index, 1);
+    return columnId;
+  },
+};

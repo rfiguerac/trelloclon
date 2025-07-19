@@ -1,9 +1,8 @@
-// Board.tsx
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Column } from "../column/Column";
-import type {Column as Columnas, Task} from "../../interface/BoardInterface";
+import type { Column as Columna, Task } from "../../interface/BoardInterface";
 import { useColumn } from "../../hooks/useColumn";
 import { useSelecedBoard } from "../../contexts/BoardContext";
 import { useTask } from "../../hooks/useTask";
@@ -15,119 +14,103 @@ interface BoardProps {
   handleAddColumn: () => void;
 }
 
-export const Board = ({showCreateColumn, handleAddColumn} : BoardProps) => {
+export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
+  const { createColumn } = useColumn();
+  const { selectedBoard } = useSelecedBoard();
 
-const {selectedBoard} = useSelecedBoard();
-
-const [columns, setColumns] = useState<Columnas[]>([]);
-const [filteredColumns, setFilteredColumns] = useState<Columnas[]>([]);
-const {getAllColumn} = useColumn();
-const { updateTask } = useTask();
-
-const [showAlert, setShowAlert] = useState(false);
-const [alertMessage, setAlertMessage] = useState("");
-
-const handleMessage = () => {
-  setAlertMessage("Columna Agreda.");
-  setShowAlert(true);
-  setTimeout(() => setShowAlert(false), 3000);
-};
-
-
-const fetchColumns = async () => {
-    const columnData = await getAllColumn();
-    setColumns(columnData);
-}
-
-const fetchTasks = async () => {
-    const { getAllTasks } = useTask();
-    const taskData = await getAllTasks();
-    setTasks(taskData);
-}
-
-useEffect(() => {
-    fetchColumns();
-    fetchTasks();
-}, []);
-
-const addColumn = (newColumn: Columnas) => {
-  handleMessage();
-  setColumns((prev) => [...prev, newColumn]);
-  setFilteredColumns((prev) => [...prev, newColumn]);
-}
-
+  const [columns, setColumns] = useState<Columna[]>([]);
+  const { getAllColumn } = useColumn();
+  const { updateTask } = useTask();
 
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
-  const handleUpdateTask = async(task: any) => {
-    
+  const handleMessage = () => {
+    setAlertMessage("Columna Agregada.");
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
+  const fetchColumns = async () => {
+    const columnData = await getAllColumn();
+    setColumns(columnData);
+  };
+
+  const fetchTasks = async () => {
+    const { getAllTasks } = useTask();
+    const taskData = await getAllTasks();
+    setTasks(taskData);
+  };
+
+  useEffect(() => {
+    fetchColumns();
+    fetchTasks();
+  }, []);
+
+  const addColumn = async (newColumn: Omit<Columna, "Id">) => {
+
+    const data = await createColumn({
+      Title: newColumn.Title!,
+      boardId: selectedBoard.Id,
+    });
+
+    handleMessage();
+    setColumns((prev) => [...prev, { 
+      Id: data.Id,
+      Title: newColumn.Title!,
+      boardId: selectedBoard.Id,
+    }]);
+  };
+
+  const handleUpdateTask = async (task: any) => {
     const data = await updateTask(task);
-    
     return data;
-  }
+  };
 
   const moveTask = (id: string, newColumnId: string) => {
-
     const taskToUpdate = tasks.find((task) => String(task.Id) === String(id));
 
-    const response = handleUpdateTask({
+    handleUpdateTask({
       Id: taskToUpdate?.Id,
       Title: taskToUpdate?.Title,
       columnId: newColumnId,
     });
 
-    // todo: agregar aviso al usuario
-    console.log(response);
-
-
     setTasks((prev) =>
       prev.map((task) =>
-        String(task.Id) === String(id)? { ...task, columnId: newColumnId } : task
+        String(task.Id) === String(id) ? { ...task, columnId: newColumnId } : task
       )
     );
   };
 
-
-  const filterColumnsByBoard = () => {
-    if (!selectedBoard.Id) {
-      setFilteredColumns([]);
-      return;
-    }
-    setFilteredColumns(columns.filter((column) => String(column.boardId) === String(selectedBoard.Id)));
-  };  
-
-  useEffect(() => {
-    filterColumnsByBoard();
+  const filteredColumns = useMemo(() => {
+    if (!selectedBoard.Id) return [];
+    return columns.filter(
+      (column) => String(column.boardId) === String(selectedBoard.Id)
+    );
   }, [columns, selectedBoard]);
-
-
-
-
-
-
 
   return (
     <>
-    <DndProvider backend={HTML5Backend}>
-    
-      <div className="flex flex-nowrap gap-4 p-6">
-        {
-          filteredColumns.map((column) => (
+      <DndProvider backend={HTML5Backend}>
+        <div className="flex flex-nowrap gap-4 p-6">
+          {filteredColumns.map((column) => (
             <Column
-            key={column.Id}
-            title={column.Title}
-            columnId={column.Id}
-            tasks={tasks}
-            moveTask={moveTask}
+              key={column.Id}
+              title={column.Title}
+              columnId={column.Id}
+              tasks={tasks}
+              moveTask={moveTask}
             />
-          ))
-        }
-      </div>
-
-    </DndProvider>
-      {showCreateColumn && <CreateColumn handleAddColumn={handleAddColumn} addColumn={addColumn}/>}
+          ))}
+        </div>
+      </DndProvider>
+      {showCreateColumn && (
+        <CreateColumn handleAddColumn={handleAddColumn} addColumn={addColumn} />
+      )}
       {showAlert && <Alert message={alertMessage} type="success" />}
-</>
+    </>
   );
 };

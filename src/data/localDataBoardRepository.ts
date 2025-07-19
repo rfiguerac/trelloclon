@@ -1,91 +1,59 @@
 import type { Board } from "../interface/BoardInterface";
 import type { BoardRepository } from "../interface/BoardRepository";
 
-const urlApi = "https://app.nocodb.com/api/v2/tables/mf10sjpw32r5ar2/records";
-  const token = "ze-hQCYQLixSb3jXFSoKUnspjD2DQIn-wDOb3DWk";
-  
+let boards: Board[] = [
+  {
+    Id: "1",
+    Title: "Tablero de Ejemplo",
+    description: "Este es un tablero de ejemplo para demostrar la funcionalidad.",
+  },
+  {
+    Id: "2",
+    Title: "Otro Tablero",
+    description: "Este es otro tablero de ejemplo.",
+  },
+  {
+    Id: "3",
+    Title: "Otro Tablero número 3",
+    description: "Este es otro tablero de ejemplo.",
+  },
+];
+
+let idCounter = boards.length + 1;
+
 export const localBoardRepository: BoardRepository = {
-    
-    getAllBoards: async function (): Promise<Board[]> {
+  getAllBoards: async function (): Promise<Board[]> {
+    return boards;
+  },
 
-       const board: Board[] = [
-        {
-            Id: "1",
-            Title: "Tablero de Ejemplo",
-            description: "Este es un tablero de ejemplo para demostrar la funcionalidad.",
-        },
-        {
-            Id: "2",
-            Title: "Otro Tablero",
-            description: "Este es otro tablero de ejemplo.",
-        } 
-       ];
-    return board;
+  createBoard: async function (board: Partial<Board>): Promise<Board> {
+    const newBoard: Board = {
+      Id: String(idCounter++),
+      Title: board.Title ?? "Sin título",
+      description: board.description ?? "",
+    };
+    return newBoard;
+  },
 
+  updateBoard: async function (board: Partial<Board>): Promise<Board | null> {
+    if (!board.Id) return null;
 
-    },
-    createBoard: async function (board:Partial<Board>): Promise<Board> {
-        const opciones = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(board),
+    const index = boards.findIndex((b) => b.Id === board.Id);
+    if (index === -1) return null;
+
+    boards[index] = {
+      ...boards[index],
+      ...board,
     };
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      const newBoard = {...board, Id: datos.Id};
-      return newBoard as Board;
+    return boards[index];
+  },
 
-    } catch (error) {
-      console.log(error);
-        return board as Board;
-    }
-    },
-    updateBoard: async function (board: Partial<Board>): Promise<Board | null> {
-        const opciones = {
-      method: "PATCH",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(board),
-    };
+  deleteBoard: async function (boardId: string): Promise<string> {
+    const index = boards.findIndex((b) => b.Id === boardId);
+    if (index === -1) throw new Error("Board no encontrada");
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      return datos.Id;
-
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-    },
-    deleteBoard: async function (boardId: string): Promise<string> {
-        const opciones = {
-      method: "DELETE",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify({ Id: boardId }),
-    };
-
-    try {
-        const resp = await fetch(urlApi, opciones);
-        const datos = await resp.json();
-        return datos.Id;
-    } catch (error) {
-        console.log(error);
-        throw new Error("Error al eliminar la board");
-    }
-        
-    }
-}
+    boards.splice(index, 1);
+    return boardId;
+  },
+};

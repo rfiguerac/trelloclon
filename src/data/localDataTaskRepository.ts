@@ -1,106 +1,54 @@
 import type { Task } from "../interface/BoardInterface";
 import type { TaskRepository } from "../interface/TaskRepository";
 
+// Base de datos simulada en memoria
+let tasks: Task[] = [
+  { Id: "1", Title: "Tarea de Ejemplo", columnId: "1" },
+  { Id: "2", Title: "Otra Tarea", columnId: "2" },
+  { Id: "3", Title: "Tarea de Proyecto", columnId: "2" },
+  { Id: "4", Title: "Tarea de Desarrollo", columnId: "1" },
+  {
+    Id: "5",
+    Title: "Tarea de Desarrollor large text, Tarea de Desarrollor large text",
+    columnId: "1",
+  },
+];
 
-
-const urlApi = "https://app.nocodb.com/api/v2/tables/mn1qk0vl2y2xxdc/records";
-const token = "ze-hQCYQLixSb3jXFSoKUnspjD2DQIn-wDOb3DWk";
+let taskIdCounter = tasks.length + 1;
 
 export const localTaskRepository: TaskRepository = {
   getAllTasks: async function (): Promise<Task[]> {
-    
-    const tasks: Task[] = [
-      {
-        Id: "1",
-        Title: "Tarea de Ejemplo",
-        columnId: "1",
-      },
-
-      {
-        Id: "2",
-        Title: "Otra Tarea",
-        columnId: "2",
-      },
-      {
-        Id: "3",
-        Title: "Tarea de Proyecto",
-        columnId: "2",
-      },
-
-      {
-        Id: "4",
-        Title: "Tarea de Desarrollo",
-        columnId: "1",
-      },
-      {
-        Id: "5",
-        Title: "Tarea de Desarrollor large text, Tarea de Desarrollor large text",
-        columnId: "1",
-      }
-
-    ]
     return tasks;
   },
-  createTask: async function (task: Partial<Task>): Promise<Task> {
-    const opciones = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(task),
-    };
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      const newTask = { ...task, Id: datos.Id };
-      return newTask as Task;
-    } catch (error) {
-      console.log(error);
-      return task as Task;
-    }
+  createTask: async function (task: Partial<Task>): Promise<Task> {
+    const newTask: Task = {
+      Id: String(taskIdCounter++),
+      Title: task.Title ?? "Sin título",
+      columnId: task.columnId ?? "1",
+    };
+    return newTask;
   },
 
   updateTask: async function (task: Partial<Task>): Promise<Task | null> {
-    const opciones = {
-      method: "PATCH",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify(task),
+    if (!task.Id) return null;
+
+    const index = tasks.findIndex((t) => t.Id === task.Id);
+    if (index === -1) return null;
+
+    tasks[index] = {
+      ...tasks[index],
+      ...task,
     };
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      return datos.Id;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+    return tasks[index];
   },
-  deleteTask: async function (boardId: string): Promise<string> {
-    const opciones = {
-      method: "DELETE",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        "xc-token": token,
-      },
-      body: JSON.stringify({ Id: boardId }),
-    };
 
-    try {
-      const resp = await fetch(urlApi, opciones);
-      const datos = await resp.json();
-      return datos.Id;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error al eliminar la board");
-    }
+  deleteTask: async function (taskId: string): Promise<string> {
+    const index = tasks.findIndex((t) => t.Id === taskId);
+    if (index === -1) throw new Error("Tarea no encontrada");
+
+    tasks.splice(index, 1);
+    return taskId;
   },
-};
+}

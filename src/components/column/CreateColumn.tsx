@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useColumn } from "../../hooks/useColumn";
 import { useSelecedBoard } from "../../contexts/BoardContext";
 import type { Column } from "../../interface/BoardInterface";
 
 interface CreateColumnProps {
   handleAddColumn: () => void;
-  addColumn: (newColumn: Column) => void;
+  addColumn: (newColumn: Omit<Column, "Id">) => void;
 }
 
 export const CreateColumn = ({
@@ -20,7 +19,6 @@ export const CreateColumn = ({
     boardId: "",
   });
 
-  const {createColumn} = useColumn();
   const {selectedBoard} = useSelecedBoard();
 
 
@@ -37,8 +35,7 @@ export const CreateColumn = ({
     }
   };
 
-  const handleCreateColumn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateColumn = async () => {
     if (newColumn.Title!.trim().length < 3) {
       setError("El título debe tener al menos 3 caracteres.");
       return;
@@ -47,19 +44,14 @@ export const CreateColumn = ({
       setError("Debe seleccionar un tablero antes de crear una columna.");
       return;
     }
-    
-    const data = await createColumn({
-      Title: newColumn.Title!,
-      boardId: selectedBoard.Id,
-    });
 
     addColumn(
        {
-        Id: data.Id,
         Title: newColumn.Title!,
         boardId: selectedBoard.Id,
       },
     );
+
     handleAddColumn();
   };
 
@@ -99,7 +91,7 @@ export const CreateColumn = ({
               Cancelar
             </button>
             <button
-              onClick={(e) => handleCreateColumn(e)}
+              onClick={handleCreateColumn}
               className="btn btn-outline btn-xs  text-xl py-6">
               Crear Lista
             </button>

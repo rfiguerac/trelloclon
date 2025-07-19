@@ -18,10 +18,10 @@ export const BoardPage = () => {
   };
 
   useEffect(() => {
-    if (!selectedBoard.Id) {
-      navigate("/");
-    }
-  }, [])
+    if (!selectedBoard?.Id) {
+      navigate("/", { replace: true });
+    } 
+  }, [selectedBoard, navigate]);
   
 
   return (
