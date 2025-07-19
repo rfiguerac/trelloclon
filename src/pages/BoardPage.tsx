@@ -22,7 +22,7 @@ export const BoardPage = () => {
                 <div className="flex justify-between items-center w-full mb-4 md:mb-0">
                   <Link
                     to={"/"}
-                    className="flex items-center text-gray-700 hover:text-gray-900 transition-colors duration-200">
+                    className="flex items-center">
                     <h2 className="card-title text-2xl md:text-3xl font-bold flex items-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
