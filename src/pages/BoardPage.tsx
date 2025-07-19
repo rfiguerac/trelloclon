@@ -79,10 +79,10 @@ export const BoardPage = () => {
                     tabIndex={0}
                     className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
-                      <button className="" onClick={handleEditBoard}>Editar tablero</button>
+                      <button className="text-lg" onClick={handleEditBoard}>Editar tablero</button>
                     </li>
                     <li>
-                      <button className="text-error" onClick={handleDeleteBoard}>Eliminar tablero</button>
+                      <button className="text-error text-lg" onClick={handleDeleteBoard}>Eliminar tablero</button>
                     </li>
                   </ul>
                 </div>
