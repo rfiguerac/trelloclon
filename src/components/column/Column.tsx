@@ -75,7 +75,7 @@ const handleAddTask = () => {
         ref={(node) => {
           if (node) drop(node);
         }}
-        className={`min-w-[250px] md:min-w-[300px] lg:min-w-[350px] flex-shrink-0 p-4 rounded-lg shadow-md min-h-[300px] ${lightBg} flex flex-col justify-between`}
+        className={`w-[260px] min-w-[260px] md:min-w-[300px] lg:min-w-[350px] flex-shrink-0 p-4 rounded-lg shadow-md min-h-[300px] ${lightBg} flex flex-col justify-between`}
 >
         <h2 className="text-xl font-bold mb-4">{title}</h2>
         {filteredTasks.map((task) => (
