@@ -6,7 +6,7 @@ import type { ColumnRepository } from "../interface/ColumnRepository";
 
 ;
 
-export const useColumn = (repository: ColumnRepository = nocoColumnRepository) => {
+export const useColumn = (repository: ColumnRepository = localColumnRepository) => {
  
   const getAllColumn = async () => {
     const columns = await repository.getAllColumn();

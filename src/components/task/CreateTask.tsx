@@ -86,12 +86,12 @@ export const CreateTask = ({
             <div className="modal-action">
               <button
               onClick={handleAddTask}
-              className="btn btn-outline btn-xs btn-secondary text-xl py-6">
+              className="btn btn-outline btn-xs  text-xl py-6">
               Cancelar
             </button>
             <button
               onClick={(e) => handleCreateTask(e)}
-              className="btn btn-outline btn-xs btn-primary text-xl py-6">
+              className="btn btn-outline btn-xs  text-xl py-6">
               Crear tarea
             </button>
             </div>

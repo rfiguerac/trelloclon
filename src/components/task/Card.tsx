@@ -26,7 +26,7 @@ export const Card = ({ id, title }: CardProps) => {
         <div className="flex justify-between items-start">
    <h3 className="text-lg font-semibold max-w-[200px] break-words whitespace-normal">{title}</h3>
     <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-      <button className="btn btn-sm btn-warning">
+      <button className="btn btn-outline btn-sm btn-warning">
          <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -42,7 +42,7 @@ export const Card = ({ id, title }: CardProps) => {
               <path d="m15 5 4 4" />
             </svg>
       </button>
-      <button className="btn btn-sm btn-error">
+      <button className="btn btn-outline btn-sm btn-error">
        <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

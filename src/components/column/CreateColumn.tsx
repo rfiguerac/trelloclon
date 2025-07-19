@@ -95,13 +95,13 @@ export const CreateColumn = ({
             <div className="modal-action">
               <button
               onClick={handleAddColumn}
-              className="btn btn-outline btn-xs btn-secondary text-xl py-6">
+              className="btn btn-outline btn-xs  text-xl py-6">
               Cancelar
             </button>
             <button
               onClick={(e) => handleCreateColumn(e)}
-              className="btn btn-outline btn-xs btn-primary text-xl py-6">
-              Crear tablero
+              className="btn btn-outline btn-xs  text-xl py-6">
+              Crear Lista
             </button>
             </div>
           </div>

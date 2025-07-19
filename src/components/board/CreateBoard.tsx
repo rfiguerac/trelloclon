@@ -108,12 +108,12 @@ export const CreateBoard = ({
             <div className="modal-action">
               <button
               onClick={handleAddBoard}
-              className="btn btn-outline btn-xs btn-secondary text-xl py-6">
+              className="btn btn-outline btn-xs text-xl py-6">
               Cancelar
             </button>
             <button
               onClick={(e) => handleCreateBoard(e)}
-              className="btn btn-outline btn-xs btn-primary text-xl py-6">
+              className="btn btn-outline btn-xs  text-xl py-6">
               Crear tablero
             </button>
             </div>

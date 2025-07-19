@@ -4,7 +4,7 @@ import type { Board } from "../interface/BoardInterface";
 import type { BoardRepository } from "../interface/BoardRepository";
 
 
-export const useBoard = (repository: BoardRepository = nocoBoardRepository) => {
+export const useBoard = (repository: BoardRepository = localBoardRepository) => {
 
   const getAllBoards = async () => {
     const boards = await repository.getAllBoards();
