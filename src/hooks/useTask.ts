@@ -1,11 +1,11 @@
 
 
-import { localTaskRepository } from '../data/localDataTaskRepository';
+// import { localTaskRepository } from '../data/localDataTaskRepository';
 import { nocoTaskRepository } from '../data/nocoTaskRepository';
 import type { Task } from '../interface/BoardInterface';
 import type { TaskRepository } from '../interface/TaskRepository';
 
-export const useTask = (resository : TaskRepository = localTaskRepository) => {
+export const useTask = (resository : TaskRepository = nocoTaskRepository) => {
 
 
     const getAllTasks = async () => {

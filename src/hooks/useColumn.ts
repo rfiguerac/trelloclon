@@ -1,12 +1,12 @@
 
-import { localColumnRepository } from "../data/localDataColumnRepository";
+// import { localColumnRepository } from "../data/localDataColumnRepository";
 import { nocoColumnRepository } from "../data/nocoColumnRepository";
 import type { Column } from "../interface/BoardInterface";
 import type { ColumnRepository } from "../interface/ColumnRepository";
 
 ;
 
-export const useColumn = (repository: ColumnRepository = localColumnRepository) => {
+export const useColumn = (repository: ColumnRepository = nocoColumnRepository) => {
  
   const getAllColumn = async () => {
     const columns = await repository.getAllColumn();
