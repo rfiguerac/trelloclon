@@ -65,13 +65,14 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
 
   const lightBg = isOver ? "bg-blue-100" : "bg-base-300";
 
-  const handleDeleteTask = () => {
-    alert("Eliminar tarea");
-  };
+  // const handleDeleteTask = () => {
+  //   alert("Eliminar tarea");
+  // };
+  
 
-  const handleEditTask = () => {
-    alert("Editar tarea");
-  };
+  // const handleEditTask = () => {
+  //   alert("Editar tarea");
+  // };
 
   const handleDeleteColumn = () => {
     alert("Eliminar columna");
