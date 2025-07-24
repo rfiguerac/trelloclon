@@ -2,12 +2,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { Board } from "../components/board/Board";
 import { useSelecedBoard } from "../contexts/BoardContext";
 import { useEffect, useState } from "react";
+import { CreateBoard } from "../components/board/CreateBoard";
+import { Alert } from "../components/Alert";
 
 export const BoardPage = () => {
   const { selectedBoard } = useSelecedBoard();
   const navigate = useNavigate();
 
   const [showCreateColumn, setShowCreateColumn] = useState(false);
+  const [showUpdateBoard, setShowUpdateBoard] = useState(false);
+ //const [showDeleteBoard, setShowDeleteBoard] = useState(false);
+
+
+ const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
 
   const handleAddColumn = () => {
     setShowCreateColumn((prev) => !prev);
@@ -24,8 +33,16 @@ export const BoardPage = () => {
   };
 
   const handleEditBoard = () => {
-    alert("Editar tablero");
+      setShowUpdateBoard((prev) => !prev);
   };
+
+
+  const message = (message : string) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);  
+  }
+
 
 
 
@@ -102,6 +119,17 @@ export const BoardPage = () => {
             />
           </div>
         </div>
+          {
+            showUpdateBoard && (
+              <CreateBoard editBoard={true} handleAddBoard={() => setShowUpdateBoard(false)}  message={message}/>
+            )
+          }
+
+           { 
+            showAlert && (
+              <Alert message={alertMessage} type="success" />
+            )
+          }
       </div>
     </div>
   );
