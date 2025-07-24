@@ -16,7 +16,7 @@ interface BoardProps {
 
 export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
   const { createColumn } = useColumn();
-  const { selectedBoard } = useSelecedBoard();
+  const { selectedBoard, selectColumn } = useSelecedBoard();
 
   const [columns, setColumns] = useState<Columna[]>([]);
   const { getAllColumn } = useColumn();
@@ -50,18 +50,20 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
   }, []);
 
   const addColumn = async (newColumn: Omit<Columna, "Id">) => {
-
     const data = await createColumn({
       Title: newColumn.Title!,
       boardId: selectedBoard.Id,
     });
 
     handleMessage();
-    setColumns((prev) => [...prev, { 
-      Id: data.Id,
-      Title: newColumn.Title!,
-      boardId: selectedBoard.Id,
-    }]);
+    setColumns((prev) => [
+      ...prev,
+      {
+        Id: data.Id,
+        Title: newColumn.Title!,
+        boardId: selectedBoard.Id,
+      },
+    ]);
   };
 
   const handleUpdateTask = async (task: any) => {
@@ -80,7 +82,9 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
 
     setTasks((prev) =>
       prev.map((task) =>
-        String(task.Id) === String(id) ? { ...task, columnId: newColumnId } : task
+        String(task.Id) === String(id)
+          ? { ...task, columnId: newColumnId }
+          : task
       )
     );
   };
@@ -91,6 +95,10 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
       (column) => String(column.boardId) === String(selectedBoard.Id)
     );
   }, [columns, selectedBoard]);
+
+  useEffect(() => {
+    selectColumn(filteredColumns);
+  }, [filteredColumns]);
 
   return (
     <>

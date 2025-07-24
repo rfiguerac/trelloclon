@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useTask } from "../../hooks/useTask";
 import { CreateTask } from "../task/CreateTask";
 import { Alert } from "../Alert";
+import { useSelecedBoard } from "../../contexts/BoardContext";
 
 interface ColumnProps {
   title: string;
@@ -16,6 +17,7 @@ interface ColumnProps {
 }
 
 export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
+  const { selectTask } = useSelecedBoard();
   const { createTask } = useTask();
 
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -63,12 +65,15 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
     );
   }, [tasks, columnId]);
 
+  useEffect(() => {
+    selectTask(filteredTasks);
+  }, [filteredTasks]);
+
   const lightBg = isOver ? "bg-blue-100" : "bg-base-300";
 
   // const handleDeleteTask = () => {
   //   alert("Eliminar tarea");
   // };
-  
 
   // const handleEditTask = () => {
   //   alert("Editar tarea");
@@ -91,12 +96,12 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
         className={`w-[260px] min-w-[260px] md:min-w-[300px] lg:min-w-[350px] flex-shrink-0 p-4 rounded-lg shadow-md min-h-[300px] ${lightBg} flex flex-col justify-between`}>
         <div className="flex flex-col gap-2 justify-between mb-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold break-words whitespace-normal">{title}</h2>
+            <h2 className="text-xl font-bold break-words whitespace-normal">
+              {title}
+            </h2>
 
             <div className="flex gap-2">
-              <button className="btn btn-sm"
-                onClick={handleEditColumn}
-              >
+              <button className="btn btn-sm" onClick={handleEditColumn}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -109,9 +114,7 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
                   <path d="m15 5 4 4" />
                 </svg>
               </button>
-              <button className="btn btn-sm "
-                onClick={handleDeleteColumn}
-              >
+              <button className="btn btn-sm " onClick={handleDeleteColumn}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
