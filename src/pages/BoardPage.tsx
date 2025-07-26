@@ -3,20 +3,19 @@ import { Board } from "../components/board/Board";
 import { useSelecedBoard } from "../contexts/BoardContext";
 import { useEffect, useState } from "react";
 import { CreateBoard } from "../components/board/CreateBoard";
-import { Alert } from "../components/Alert";
+
+import { ModalDelete } from "../components/ModalDelete";
 
 export const BoardPage = () => {
   const { selectedBoard } = useSelecedBoard();
+
   const navigate = useNavigate();
 
   const [showCreateColumn, setShowCreateColumn] = useState(false);
   const [showUpdateBoard, setShowUpdateBoard] = useState(false);
- //const [showDeleteBoard, setShowDeleteBoard] = useState(false);
+  //const [showDeleteBoard, setShowDeleteBoard] = useState(false);
 
-
- const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleAddColumn = () => {
     setShowCreateColumn((prev) => !prev);
@@ -29,22 +28,16 @@ export const BoardPage = () => {
   }, [selectedBoard, navigate]);
 
   const handleDeleteBoard = () => {
-    alert("Eliminar tablero");
+    handleShowModal();
   };
 
   const handleEditBoard = () => {
-      setShowUpdateBoard((prev) => !prev);
+    setShowUpdateBoard((prev) => !prev);
   };
 
-
-  const message = (message : string) => {
-    setAlertMessage(message);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);  
-  }
-
-
-
+  const handleShowModal = () => {
+    setShowDeleteModal((prev) => !prev);
+  };
 
   return (
     <div>
@@ -69,7 +62,7 @@ export const BoardPage = () => {
                 </h2>
               </Link>
               <div className="flex items-center gap-4">
-                 <button
+                <button
                   onClick={handleAddColumn}
                   className="btn btn-outline btn-xs text-xl py-6 rounded-lg px-4">
                   + Lista
@@ -96,14 +89,19 @@ export const BoardPage = () => {
                     tabIndex={0}
                     className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                     <li>
-                      <button className="text-lg" onClick={handleEditBoard}>Editar tablero</button>
+                      <button className="text-lg" onClick={handleEditBoard}>
+                        Editar tablero
+                      </button>
                     </li>
                     <li>
-                      <button className="text-error text-lg" onClick={handleDeleteBoard}>Eliminar tablero</button>
+                      <button
+                        className="text-error text-lg"
+                        onClick={handleDeleteBoard}>
+                        Eliminar tablero
+                      </button>
                     </li>
                   </ul>
                 </div>
-               
               </div>
             </div>
           </div>
@@ -119,17 +117,19 @@ export const BoardPage = () => {
             />
           </div>
         </div>
-          {
-            showUpdateBoard && (
-              <CreateBoard editBoard={true} handleAddBoard={() => setShowUpdateBoard(false)}  message={message}/>
-            )
-          }
+        {showUpdateBoard && (
+          <CreateBoard
+            editBoard={true}
+            handleAddBoard={() => setShowUpdateBoard(false)}
+          />
+        )}
 
-           { 
-            showAlert && (
-              <Alert message={alertMessage} type="success" />
-            )
-          }
+        {showDeleteModal && (
+          <ModalDelete
+            handleShowModal={handleShowModal}
+            title={selectedBoard.Title}
+            typeToDelete={"board"}></ModalDelete>
+        )}
       </div>
     </div>
   );

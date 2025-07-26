@@ -3,15 +3,10 @@ import { CardBoard } from "../components/board/CardBoard";
 import { CreateBoard } from "../components/board/CreateBoard";
 import type { Board } from "../interface/BoardInterface";
 import { useBoard } from "../hooks/useBoard";
-import { Alert } from "../components/Alert";
 
 export const PrincipalPage = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [showCreateBoard, setShowCreateBoard] = useState(false);
-
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-
 
   const { getAllBoards } = useBoard();
 
@@ -31,13 +26,6 @@ export const PrincipalPage = () => {
   const handleAddBoard = () => {
     setShowCreateBoard((prev) => !prev);
   };
-
-    const message = (message : string) => {
-    setAlertMessage(message);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);  
-  }
-
 
   return (
     <>
@@ -68,11 +56,7 @@ export const PrincipalPage = () => {
       </div>
 
       {showCreateBoard && (
-        <CreateBoard handleAddBoard={handleAddBoard} setBoards={setBoards}  message={message}/>
-      )}
-
-      {showAlert && (
-        <Alert message={alertMessage} type="success" />
+        <CreateBoard handleAddBoard={handleAddBoard} setBoards={setBoards} />
       )}
     </>
   );

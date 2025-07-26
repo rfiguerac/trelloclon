@@ -7,7 +7,7 @@ import { useColumn } from "../../hooks/useColumn";
 import { useSelecedBoard } from "../../contexts/BoardContext";
 import { useTask } from "../../hooks/useTask";
 import { CreateColumn } from "../column/CreateColumn";
-import { Alert } from "../Alert";
+import { useToast } from "../../contexts/ToastContext";
 
 interface BoardProps {
   showCreateColumn: boolean;
@@ -16,6 +16,9 @@ interface BoardProps {
 
 export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
   const { createColumn } = useColumn();
+
+  const { showToast } = useToast();
+
   const { selectedBoard, selectColumn } = useSelecedBoard();
 
   const [columns, setColumns] = useState<Columna[]>([]);
@@ -23,15 +26,6 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
   const { updateTask } = useTask();
 
   const [tasks, setTasks] = useState<Task[]>([]);
-
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-
-  const handleMessage = () => {
-    setAlertMessage("Columna Agregada.");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
-  };
 
   const fetchColumns = async () => {
     const columnData = await getAllColumn();
@@ -50,20 +44,23 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
   }, []);
 
   const addColumn = async (newColumn: Omit<Columna, "Id">) => {
-    const data = await createColumn({
-      Title: newColumn.Title!,
-      boardId: selectedBoard.Id,
-    });
-
-    handleMessage();
-    setColumns((prev) => [
-      ...prev,
-      {
-        Id: data.Id,
+    try {
+      const data = await createColumn({
         Title: newColumn.Title!,
         boardId: selectedBoard.Id,
-      },
-    ]);
+      });
+      setColumns((prev) => [
+        ...prev,
+        {
+          Id: data.Id,
+          Title: newColumn.Title!,
+          boardId: selectedBoard.Id,
+        },
+      ]);
+      showToast("nueva columna agregada", "success");
+    } catch (error) {
+      showToast("error al crear la columna", "error");
+    }
   };
 
   const handleUpdateTask = async (task: any) => {
@@ -118,7 +115,6 @@ export const Board = ({ showCreateColumn, handleAddColumn }: BoardProps) => {
       {showCreateColumn && (
         <CreateColumn handleAddColumn={handleAddColumn} addColumn={addColumn} />
       )}
-      {showAlert && <Alert message={alertMessage} type="success" />}
     </>
   );
 };

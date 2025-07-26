@@ -6,8 +6,8 @@ import { Card } from "../task/Card";
 import { useEffect, useState } from "react";
 import { useTask } from "../../hooks/useTask";
 import { CreateTask } from "../task/CreateTask";
-import { Alert } from "../Alert";
 import { useSelecedBoard } from "../../contexts/BoardContext";
+import { useToast } from "../../contexts/ToastContext";
 
 interface ColumnProps {
   title: string;
@@ -19,33 +19,29 @@ interface ColumnProps {
 export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
   const { selectTask } = useSelecedBoard();
   const { createTask } = useTask();
+  const { showToast } = useToast();
 
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-
-  const handleMessage = () => {
-    setAlertMessage("task Agreda.");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
-  };
-
   const addTask = async (newTask: Task) => {
-    const data = await createTask({
-      Title: newTask.Title!,
-      columnId: columnId,
-    });
-    handleMessage();
-    setFilteredTasks((prev) => [
-      ...prev,
-      {
-        Id: data.Id,
+    try {
+      const data = await createTask({
         Title: newTask.Title!,
         columnId: columnId,
-      },
-    ]);
+      });
+      setFilteredTasks((prev) => [
+        ...prev,
+        {
+          Id: data.Id,
+          Title: newTask.Title!,
+          columnId: columnId,
+        },
+      ]);
+      showToast("nueva tarea agregada", "success");
+    } catch (error) {
+      showToast("error al crear la tarea", "error");
+    }
   };
   const handleAddTask = () => {
     setShowCreateTask(!showCreateTask);
@@ -150,7 +146,6 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
           selectedColumn={{ Id: columnId }}
         />
       )}
-      {showAlert && <Alert message={alertMessage} type="success" />}
     </>
   );
 };
