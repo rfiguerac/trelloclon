@@ -42,8 +42,8 @@ export const BoardPage = () => {
     <div>
       <div className="card bg-base-100 shadow-sm min-h-[60vh] opacity-90">
         <div className="card-body">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center py-6 md:pl-4 md:pr-4">
-            <div className="flex justify-between items-center w-full mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center  md:pl-4 md:pr-4">
+            <div className="flex justify-between items-center w-full md:mb-0">
               <Link to={"/"} className="flex items-center">
                 <h2 className="card-title text-2xl md:text-3xl font-bold flex items-center gap-2">
                   <svg
@@ -104,6 +104,7 @@ export const BoardPage = () => {
               </div>
             </div>
           </div>
+          <div className="divider"></div>
 
           <h2 className="card-title text-3xl md:text-5xl font-bold w-full text-center mt-4 md:w-auto md:text-left md:mt-0">
             {selectedBoard && selectedBoard.Title}
