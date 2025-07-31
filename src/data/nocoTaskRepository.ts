@@ -59,13 +59,16 @@ export const nocoTaskRepository: TaskRepository = {
         throw new Error("Error al actualizar la tarea");
       }
       const datos = await resp.json();
+      console.log(datos);
       const newTask: Task = {
         Id: datos.Id,
-        Title: task.Title!,
-        columnId: task.columnId!,
+        Title: task.Title,
+        columnId: task.columnId,
       };
+      console.log(newTask);
       return newTask;
     } catch (error) {
+      console.log(error);
       throw new Error("Error al actualizar la tarea");
     }
   },

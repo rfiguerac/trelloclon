@@ -1,21 +1,28 @@
 import { useState } from "react";
 
 import type { Task } from "../../interface/BoardInterface";
+import { useTaskStore } from "../../store/taskStore";
+import { useToast } from "../../contexts/ToastContext";
 
 interface CreateTaskProps {
   handleAddTask: () => void;
-  addTask: (newTask: Task) => void;
   selectedColumn: { Id: string };
+  isEdit?: boolean;
+  taskToEdit?: Task;
 }
 
 export const CreateTask = ({
   handleAddTask,
-  addTask,
   selectedColumn,
+  isEdit = false,
+  taskToEdit,
 }: CreateTaskProps) => {
   const [newTask, setNewTask] = useState<Partial<Task>>({
-    Title: "",
+    Title: isEdit ? taskToEdit?.Title : "",
   });
+
+  const { addTask, editTask } = useTaskStore();
+  const { showToast } = useToast();
 
   const [error, setError] = useState("");
 
@@ -37,18 +44,30 @@ export const CreateTask = ({
       return;
     }
 
-    addTask({
-      Id: "",
-      Title: newTask.Title!,
-      columnId: selectedColumn.Id,
-    });
+    if (isEdit && taskToEdit) {
+      await editTask({
+        Id: taskToEdit.Id,
+        Title: newTask.Title!,
+        columnId: selectedColumn.Id,
+      });
+      showToast("tarea actualizada", "success");
+    } else {
+      await addTask({
+        Title: newTask.Title!,
+        columnId: selectedColumn.Id,
+      });
+      showToast("tarea creada", "success");
+    }
+
     handleAddTask();
   };
 
   return (
     <dialog open className="modal">
       <div className="modal-box">
-        <h3 className="font-bold text-lg">Crear una nueva tarea</h3>
+        <h3 className="font-bold text-lg">
+          {isEdit ? "Editar tarea" : "Crear una nueva tarea"}
+        </h3>
         <div className="mb-4">
           <label
             htmlFor="boardTitle"
@@ -83,7 +102,7 @@ export const CreateTask = ({
           <button
             onClick={(e) => handleCreateTask(e)}
             className="btn btn-outline btn-xs  text-xl py-6">
-            Crear tarea
+            {isEdit ? "Actualizar tarea" : "Crear tarea"}
           </button>
         </div>
       </div>

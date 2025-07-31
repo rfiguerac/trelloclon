@@ -1,5 +1,4 @@
 import { useToast } from "../contexts/ToastContext";
-import type { Task } from "../interface/BoardInterface";
 import { useNavigate } from "react-router-dom";
 import { useBoardStore } from "../store/boardStore";
 import { useColumnStore } from "../store/columnStore";
@@ -10,6 +9,7 @@ interface ModalProps {
   title: string;
   children?: React.ReactNode;
   columnId?: string;
+  taskId?: string;
   typeToDelete: "board" | "column" | "task";
 }
 
@@ -18,6 +18,7 @@ export const ModalDelete = ({
   title,
   typeToDelete,
   columnId,
+  taskId,
   handleShowModal,
 }: ModalProps) => {
   const { removeBoard, selectedBoard } = useBoardStore();
@@ -27,57 +28,59 @@ export const ModalDelete = ({
 
   const navigate = useNavigate();
 
-  const handleDeleteTask = () => {
-    const selectedTask = tasks?.filter((task) => task.columnId === columnId);
-    const tasksToDelete = typeToDelete === "task" ? tasks : selectedTask;
-    if (!tasksToDelete || tasksToDelete.length === 0) return;
-    tasksToDelete.forEach((task) => {
-      removeTask(task.Id);
-    });
-  };
-
-  const handleDeleteColumn = () => {
-    if (typeToDelete === "column" && columnId) {
-      removeColumn(columnId);
-      return;
-    }
-    const selectedColumn = columns.filter(
-      (column) => column.boardId === selectedBoard?.Id
-    );
-    if (!selectedColumn || selectedColumn.length === 0) return;
-    selectedColumn.forEach((column) => {
-      removeBoard(column.Id);
-    });
-  };
-
-  const handleDeleteBoard = () => {
+  const handleDeleteBoard = async () => {
     if (!selectedBoard) return;
-    removeBoard(selectedBoard.Id);
+
+    const columnsToDelete = columns.filter(
+      (c) => c.boardId === selectedBoard.Id
+    );
+    const tasksToDelete = tasks.filter((t) =>
+      columnsToDelete.some((c) => c.Id === t.columnId)
+    );
+
+    for (const task of tasksToDelete) {
+      await removeTask(task.Id);
+    }
+    for (const column of columnsToDelete) {
+      await removeColumn(column.Id);
+    }
+
+    await removeBoard(selectedBoard.Id);
   };
 
-  const handleDelete = () => {
+  const handleDeleteColumn = async (id: string) => {
+    const tasksToDelete = tasks.filter((t) => t.columnId === id);
+    for (const task of tasksToDelete) {
+      await removeTask(task.Id);
+    }
+    await removeColumn(id);
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    await removeTask(id);
+  };
+
+  const handleDelete = async () => {
     try {
       if (typeToDelete === "board") {
-        handleDeleteBoard();
-        handleDeleteColumn();
-        handleDeleteTask();
+        await handleDeleteBoard();
+        showToast(
+          `Tablero "${selectedBoard?.Title}" eliminado correctamente`,
+          "success"
+        );
         navigate("/", { replace: true });
+      } else if (typeToDelete === "column" && columnId) {
+        await handleDeleteColumn(columnId);
+        showToast(`Columna eliminada correctamente`, "success");
+      } else if (typeToDelete === "task" && taskId) {
+        await handleDeleteTask(taskId);
+        showToast(`Tarea eliminada correctamente`, "success");
       }
-      if (typeToDelete === "column") {
-        handleDeleteColumn();
-        return;
-      }
-      if (typeToDelete === "task") {
-        handleDeleteTask();
-        return;
-      }
-
-      showToast(`${title} eliminado correctamente`, "success");
 
       handleShowModal();
     } catch (error) {
-      console.error("Error al eliminar:", error);
       showToast(`Hubo un error al eliminar ${title}`, "error");
+      throw new Error(`Hubo un error al eliminar ${title}`);
     }
   };
 

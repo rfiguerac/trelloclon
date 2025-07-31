@@ -3,12 +3,10 @@ import { useDrop } from "react-dnd";
 
 import type { Column as Columna, Task } from "../../interface/BoardInterface";
 import { Card } from "../task/Card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CreateTask } from "../task/CreateTask";
-
-import { useToast } from "../../contexts/ToastContext";
 import { CreateColumn } from "./CreateColumn";
-import { useTaskStore } from "../../store/taskStore";
+import { ModalDelete } from "../ModalDelete";
 
 interface ColumnProps {
   title: string;
@@ -18,10 +16,6 @@ interface ColumnProps {
 }
 
 export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
-  const { addTask } = useTaskStore();
-
-  const { showToast } = useToast();
-
   const [showEditColumn, setShowEditColumn] = useState(false);
   const [showDeleteColumn, setShowDeleteColumn] = useState(false);
 
@@ -29,18 +23,6 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
 
   const isOpenModalTask = () => {
     setShowCreateTask(!showCreateTask);
-  };
-
-  const handleAddTask = async (newTask: Task) => {
-    try {
-      await addTask({
-        Title: newTask.Title!,
-        columnId: columnId,
-      });
-      showToast(`nueva tarea  agregada `, "success");
-    } catch (error) {
-      showToast("error al crear la tarea", "error");
-    }
   };
 
   const [{ isOver }, drop] = useDrop({
@@ -54,7 +36,7 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
   const lightBg = isOver ? "bg-blue-100" : "bg-base-300";
 
   const handleDeleteColumn = () => {
-    alert("Eliminar columna");
+    setShowDeleteColumn(!showDeleteColumn);
   };
 
   const handleEditColumn = () => {
@@ -67,7 +49,7 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
         ref={(node) => {
           if (node) drop(node);
         }}
-        className={`w-[260px] min-w-[260px] md:min-w-[300px] lg:min-w-[350px] flex-shrink-0 p-4 rounded-lg shadow-md min-h-[300px] ${lightBg} flex flex-col justify-between`}>
+        className={`w-[260px] min-w-[260px] md:min-w-[300px] lg:min-w-[350px] flex-shrink-0 p-4 rounded-lg shadow-md  ${lightBg} flex flex-col justify-start`}>
         <div className="flex flex-col gap-2 justify-between mb-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold break-words whitespace-normal">
@@ -107,9 +89,9 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
         </div>
 
         {tasks.map((task) => (
-          <Card key={task.Id} id={task.Id} title={task.Title} />
+          <Card key={task.Id} task={task} />
         ))}
-        <div className="mt-4 ">
+        <div className="mt-auto">
           <button
             onClick={isOpenModalTask}
             className="btn btn-outline btn-lg w-full text-lg">
@@ -120,18 +102,26 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
       {showCreateTask && (
         <CreateTask
           handleAddTask={isOpenModalTask}
-          addTask={addTask}
           selectedColumn={{ Id: columnId }}
         />
       )}
+
       {showEditColumn && (
         <CreateColumn
           handleCloseModal={() => setShowEditColumn(false)}
           isEdit={true}
           columnToEdit={{ Id: columnId, Title: title } as Columna}
         />
-      )}{" "}
-      {showDeleteColumn && <div>Eliminar columna</div>}
+      )}
+
+      {showDeleteColumn && (
+        <ModalDelete
+          typeToDelete="column"
+          columnId={columnId}
+          handleShowModal={handleDeleteColumn}
+          title={title}
+        />
+      )}
     </>
   );
 };

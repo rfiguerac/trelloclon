@@ -85,7 +85,6 @@ export const nocoColumnRepository: ColumnRepository = {
       const datos = await resp.json();
       return datos.Id;
     } catch (error) {
-      console.log(error);
       throw new Error("Error al eliminar la columna");
     }
   },

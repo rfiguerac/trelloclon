@@ -38,8 +38,7 @@ export const nocoBoardRepository: BoardRepository = {
       const newBoard = { ...board, Id: datos.Id };
       return newBoard as Board;
     } catch (error) {
-      console.log(error);
-      return board as Board;
+      throw new Error("Error al crear la board");
     }
   },
   updateBoard: async function (board: Board): Promise<Board | null> {
@@ -86,7 +85,6 @@ export const nocoBoardRepository: BoardRepository = {
       const datos = await resp.json();
       return datos.Id;
     } catch (error) {
-      console.log(error);
       throw new Error("Error al eliminar la board");
     }
   },

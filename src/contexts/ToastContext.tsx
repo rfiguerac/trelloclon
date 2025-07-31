@@ -9,10 +9,9 @@ interface ToastProps {
 const ToastContext = createContext<ToastProps | undefined>(undefined);
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toast, setToast] = useState<{
-    message: string;
-    type: ToastType;
-  } | null>(null);
+  const [toasts, setToasts] = useState<
+    { id: number; message: string; type: ToastType }[]
+  >([]);
 
   const icons = {
     success: (
@@ -74,8 +73,13 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const showToast = (message: string, type: ToastType = "info") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000); // auto-dismiss
+    const id = Date.now();
+    const newToast = { id, message, type };
+    setToasts((prev) => [...prev, newToast]);
+
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3000);
   };
 
   const alertStyle: Record<ToastType, string> = {
@@ -88,12 +92,14 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {toast && (
+      {toasts.length > 0 && (
         <div className="toast toast-top toast-end z-50">
-          <div className={`alert ${alertStyle[toast.type]}`}>
-            {icons[toast.type as ToastType]}
-            <span>{toast.message}</span>
-          </div>
+          {toasts.map((toast) => (
+            <div key={toast.id} className={`alert ${alertStyle[toast.type]}`}>
+              {icons[toast.type]}
+              <span>{toast.message}</span>
+            </div>
+          ))}
         </div>
       )}
     </ToastContext.Provider>

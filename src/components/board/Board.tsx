@@ -42,6 +42,7 @@ export const Board = ({ showCreateColumn, handleCloseModal }: BoardProps) => {
           Title: taskToUpdate.Title,
           columnId: newColumnId,
         });
+        showToast("Tarea movida con éxito", "success");
       } catch (error) {
         showToast("Error al mover la tarea", "error");
         console.error("Error al mover la tarea:", error);
@@ -59,7 +60,7 @@ export const Board = ({ showCreateColumn, handleCloseModal }: BoardProps) => {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <div className="flex flex-nowrap gap-4 p-6">
+        <div className="flex flex-nowrap gap-4 p-6 items-start">
           {filteredColumns.map((column) => (
             <Column
               key={column.Id}

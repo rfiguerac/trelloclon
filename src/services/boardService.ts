@@ -1,10 +1,10 @@
-// import { localBoardRepository } from "../data/localDataBoardRepository";
+import { localBoardRepository } from "../data/localDataBoardRepository";
 import { nocoBoardRepository } from "../data/nocoBoardRepository";
 import type { Board } from "../interface/BoardInterface";
 import type { BoardRepository } from "../interface/BoardRepository";
 
 export const boardService = (
-  repository: BoardRepository = nocoBoardRepository
+  repository: BoardRepository = localBoardRepository
 ) => {
   const getBoards = async () => {
     const boards = await repository.getAllBoards();
