@@ -1,50 +1,46 @@
 // Column.tsx
 import { useDrop } from "react-dnd";
 
-import type { Task } from "../../interface/BoardInterface";
+import type { Column as Columna, Task } from "../../interface/BoardInterface";
 import { Card } from "../task/Card";
 import { useEffect, useState } from "react";
-import { useTask } from "../../hooks/useTask";
 import { CreateTask } from "../task/CreateTask";
-import { useSelecedBoard } from "../../contexts/BoardContext";
+
 import { useToast } from "../../contexts/ToastContext";
+import { CreateColumn } from "./CreateColumn";
+import { useTaskStore } from "../../store/taskStore";
 
 interface ColumnProps {
   title: string;
   columnId: string;
   tasks: Task[];
-  moveTask: (id: string, newColumnId: string) => void;
+  moveTask: (taskId: string, columnId: string) => void;
 }
 
 export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
-  const { selectTask } = useSelecedBoard();
-  const { createTask } = useTask();
+  const { addTask } = useTaskStore();
+
   const { showToast } = useToast();
 
-  const [showCreateTask, setShowCreateTask] = useState(false);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+  const [showEditColumn, setShowEditColumn] = useState(false);
+  const [showDeleteColumn, setShowDeleteColumn] = useState(false);
 
-  const addTask = async (newTask: Task) => {
+  const [showCreateTask, setShowCreateTask] = useState(false);
+
+  const isOpenModalTask = () => {
+    setShowCreateTask(!showCreateTask);
+  };
+
+  const handleAddTask = async (newTask: Task) => {
     try {
-      const data = await createTask({
+      await addTask({
         Title: newTask.Title!,
         columnId: columnId,
       });
-      setFilteredTasks((prev) => [
-        ...prev,
-        {
-          Id: data.Id,
-          Title: newTask.Title!,
-          columnId: columnId,
-        },
-      ]);
-      showToast("nueva tarea agregada", "success");
+      showToast(`nueva tarea  agregada `, "success");
     } catch (error) {
       showToast("error al crear la tarea", "error");
     }
-  };
-  const handleAddTask = () => {
-    setShowCreateTask(!showCreateTask);
   };
 
   const [{ isOver }, drop] = useDrop({
@@ -55,32 +51,14 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
     }),
   });
 
-  useEffect(() => {
-    setFilteredTasks(
-      tasks.filter((task) => String(task.columnId) === String(columnId))
-    );
-  }, [tasks, columnId]);
-
-  useEffect(() => {
-    selectTask(filteredTasks);
-  }, [filteredTasks]);
-
   const lightBg = isOver ? "bg-blue-100" : "bg-base-300";
-
-  // const handleDeleteTask = () => {
-  //   alert("Eliminar tarea");
-  // };
-
-  // const handleEditTask = () => {
-  //   alert("Editar tarea");
-  // };
 
   const handleDeleteColumn = () => {
     alert("Eliminar columna");
   };
 
   const handleEditColumn = () => {
-    alert("Editar columna");
+    setShowEditColumn(!showEditColumn);
   };
 
   return (
@@ -128,12 +106,12 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
           </div>
         </div>
 
-        {filteredTasks.map((task) => (
+        {tasks.map((task) => (
           <Card key={task.Id} id={task.Id} title={task.Title} />
         ))}
         <div className="mt-4 ">
           <button
-            onClick={handleAddTask}
+            onClick={isOpenModalTask}
             className="btn btn-outline btn-lg w-full text-lg">
             + Agregar tarea
           </button>
@@ -141,11 +119,19 @@ export const Column = ({ title, columnId, tasks, moveTask }: ColumnProps) => {
       </div>
       {showCreateTask && (
         <CreateTask
-          handleAddTask={handleAddTask}
+          handleAddTask={isOpenModalTask}
           addTask={addTask}
           selectedColumn={{ Id: columnId }}
         />
       )}
+      {showEditColumn && (
+        <CreateColumn
+          handleCloseModal={() => setShowEditColumn(false)}
+          isEdit={true}
+          columnToEdit={{ Id: columnId, Title: title } as Columna}
+        />
+      )}{" "}
+      {showDeleteColumn && <div>Eliminar columna</div>}
     </>
   );
 };

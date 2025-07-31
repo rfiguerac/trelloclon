@@ -1,17 +1,15 @@
-import { useSelecedBoard } from "../contexts/BoardContext";
-import { useBoard } from "../hooks/useBoard";
-import { useColumn } from "../hooks/useColumn";
-import { useTask } from "../hooks/useTask";
 import { useToast } from "../contexts/ToastContext";
 import type { Task } from "../interface/BoardInterface";
 import { useNavigate } from "react-router-dom";
+import { useBoardStore } from "../store/boardStore";
+import { useColumnStore } from "../store/columnStore";
+import { useTaskStore } from "../store/taskStore";
 
 interface ModalProps {
   handleShowModal: () => void;
   title: string;
   children?: React.ReactNode;
   columnId?: string;
-  tasks?: Task[];
   typeToDelete: "board" | "column" | "task";
 }
 
@@ -20,39 +18,41 @@ export const ModalDelete = ({
   title,
   typeToDelete,
   columnId,
-  tasks,
   handleShowModal,
 }: ModalProps) => {
-  const { deleteBoard } = useBoard();
-  const { deleteColumn } = useColumn();
-  const { deleteTask } = useTask();
+  const { removeBoard, selectedBoard } = useBoardStore();
+  const { removeColumn, columns } = useColumnStore();
+  const { removeTask, tasks } = useTaskStore();
   const { showToast } = useToast();
 
   const navigate = useNavigate();
 
-  const { selectedBoard, selectedColumn, selectedTask } = useSelecedBoard();
-
   const handleDeleteTask = () => {
+    const selectedTask = tasks?.filter((task) => task.columnId === columnId);
     const tasksToDelete = typeToDelete === "task" ? tasks : selectedTask;
     if (!tasksToDelete || tasksToDelete.length === 0) return;
     tasksToDelete.forEach((task) => {
-      deleteTask(task.Id);
+      removeTask(task.Id);
     });
   };
 
   const handleDeleteColumn = () => {
     if (typeToDelete === "column" && columnId) {
-      deleteColumn(columnId);
+      removeColumn(columnId);
       return;
     }
+    const selectedColumn = columns.filter(
+      (column) => column.boardId === selectedBoard?.Id
+    );
     if (!selectedColumn || selectedColumn.length === 0) return;
     selectedColumn.forEach((column) => {
-      deleteColumn(column.Id);
+      removeBoard(column.Id);
     });
   };
 
   const handleDeleteBoard = () => {
-    deleteBoard(selectedBoard.Id);
+    if (!selectedBoard) return;
+    removeBoard(selectedBoard.Id);
   };
 
   const handleDelete = () => {

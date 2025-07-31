@@ -1,30 +1,35 @@
-import { useState } from "react";
-import type { Board } from "../../interface/BoardInterface";
-import { useBoard } from "../../hooks/useBoard";
-import { useSelecedBoard } from "../../contexts/BoardContext";
+import { useEffect, useState } from "react";
 import { useToast } from "../../contexts/ToastContext";
+import { useBoardStore } from "../../store/boardStore.ts";
 
 interface CreateBoardProps {
   handleAddBoard: () => void;
-  setBoards?: React.Dispatch<React.SetStateAction<Board[]>>;
-  editBoard?: boolean;
+  isEditMode?: boolean;
 }
 
 export const CreateBoard = ({
   handleAddBoard,
-  setBoards,
-  editBoard = false,
+  isEditMode = false,
 }: CreateBoardProps) => {
-  const { selectedBoard, setSelectedBoard } = useSelecedBoard();
+  const { selectedBoard, editBoard, addBoard } = useBoardStore();
 
   const { showToast } = useToast();
 
-  const [newBoard, setNewBoard] = useState({
-    title: editBoard ? selectedBoard.Title : "",
-    description: editBoard ? selectedBoard.description : "",
-  });
+  const initialBoard = {
+    title: "",
+    description: "",
+  };
+  const [newBoard, setNewBoard] = useState(initialBoard);
 
-  const { createBoard, updateBoard } = useBoard();
+  useEffect(() => {
+    if (isEditMode && selectedBoard) {
+      setNewBoard({
+        title: selectedBoard.Title,
+        description: selectedBoard.description,
+      });
+    }
+  }, [isEditMode, selectedBoard]);
+
   const [error, setError] = useState("");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,19 +47,14 @@ export const CreateBoard = ({
     e.preventDefault();
 
     try {
-      let data = undefined;
+      let data;
       if (newBoard.title.trim().length < 3) {
         setError("El título debe tener al menos 3 caracteres.");
         return;
       }
 
-      if (editBoard) {
-        data = await updateBoard({
-          Id: selectedBoard.Id,
-          Title: newBoard.title,
-          description: newBoard.description || "Sin descripción",
-        });
-        setSelectedBoard({
+      if (isEditMode && selectedBoard) {
+        data = await editBoard({
           Id: selectedBoard.Id,
           Title: newBoard.title,
           description: newBoard.description || "Sin descripción",
@@ -62,22 +62,11 @@ export const CreateBoard = ({
 
         showToast("tablero actualizado", "success");
       } else {
-        data = await createBoard({
+        data = await addBoard({
           Title: newBoard.title,
           description: newBoard.description || "Sin descripción",
         });
         showToast("nuevo tablero agregado", "success");
-      }
-
-      if (data?.Id && setBoards) {
-        setBoards((prevBoards) => [
-          ...prevBoards,
-          {
-            Id: data.Id,
-            Title: newBoard.title,
-            description: newBoard.description || "Sin descripción",
-          },
-        ]);
       }
     } catch (error) {
       showToast("error al crear el tablero", "error");
@@ -90,7 +79,9 @@ export const CreateBoard = ({
     <>
       <dialog open className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Crear Nuevo Tablero</h3>
+          <h3 className="font-bold text-lg">
+            {isEditMode ? "Actualizar Tablero" : "Crear Nuevo Tablero"}
+          </h3>
           <div className="mb-4">
             <label
               htmlFor="boardTitle"
@@ -144,7 +135,7 @@ export const CreateBoard = ({
             <button
               onClick={(e) => handleCreateBoard(e)}
               className="btn btn-outline btn-xs  text-xl py-6">
-              {editBoard ? "Actualizar tablero" : "Crear tablero"}
+              {isEditMode ? "Actualizar tablero" : "Crear tablero"}
             </button>
           </div>
         </div>

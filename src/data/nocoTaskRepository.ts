@@ -1,8 +1,6 @@
 import type { Task } from "../interface/BoardInterface";
 import type { TaskRepository } from "../interface/TaskRepository";
 
-
-
 const urlApi = "https://app.nocodb.com/api/v2/tables/mn1qk0vl2y2xxdc/records";
 const token = "ze-hQCYQLixSb3jXFSoKUnspjD2DQIn-wDOb3DWk";
 
@@ -23,7 +21,7 @@ export const nocoTaskRepository: TaskRepository = {
     const task: Task[] = data.list;
     return task;
   },
-  createTask: async function (task: Partial<Task>): Promise<Task> {
+  createTask: async function (task: Omit<Task, "Id">): Promise<Task> {
     const opciones = {
       method: "POST",
       headers: {
@@ -40,12 +38,11 @@ export const nocoTaskRepository: TaskRepository = {
       const newTask = { ...task, Id: datos.Id };
       return newTask as Task;
     } catch (error) {
-      console.log(error);
-      return task as Task;
+      throw new Error("Error al crear la tarea");
     }
   },
 
-  updateTask: async function (task: Partial<Task>): Promise<Task | null> {
+  updateTask: async function (task: Task): Promise<Task | null> {
     const opciones = {
       method: "PATCH",
       headers: {
@@ -58,14 +55,21 @@ export const nocoTaskRepository: TaskRepository = {
 
     try {
       const resp = await fetch(urlApi, opciones);
+      if (!resp.ok) {
+        throw new Error("Error al actualizar la tarea");
+      }
       const datos = await resp.json();
-      return datos.Id;
+      const newTask: Task = {
+        Id: datos.Id,
+        Title: task.Title!,
+        columnId: task.columnId!,
+      };
+      return newTask;
     } catch (error) {
-      console.log(error);
-      return null;
+      throw new Error("Error al actualizar la tarea");
     }
   },
-  deleteTask: async function (boardId: string): Promise<string> {
+  deleteTask: async function (taskId: string): Promise<string> {
     const opciones = {
       method: "DELETE",
       headers: {
@@ -73,7 +77,7 @@ export const nocoTaskRepository: TaskRepository = {
         "Content-Type": "application/json",
         "xc-token": token,
       },
-      body: JSON.stringify({ Id: boardId }),
+      body: JSON.stringify({ Id: taskId }),
     };
 
     try {
@@ -81,7 +85,6 @@ export const nocoTaskRepository: TaskRepository = {
       const datos = await resp.json();
       return datos.Id;
     } catch (error) {
-      console.log(error);
       throw new Error("Error al eliminar la board");
     }
   },

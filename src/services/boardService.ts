@@ -3,21 +3,24 @@ import { nocoBoardRepository } from "../data/nocoBoardRepository";
 import type { Board } from "../interface/BoardInterface";
 import type { BoardRepository } from "../interface/BoardRepository";
 
-
-export const useBoard = (repository: BoardRepository = nocoBoardRepository) => {
-
-  const getAllBoards = async () => {
+export const boardService = (
+  repository: BoardRepository = nocoBoardRepository
+) => {
+  const getBoards = async () => {
     const boards = await repository.getAllBoards();
     return boards;
   };
 
-  const createBoard = async (board: Partial<Board>) => {
+  const createBoard = async (board: Omit<Board, "Id">) => {
     const newBoard = await repository.createBoard(board);
     return newBoard;
   };
 
   const updateBoard = async (board: Board) => {
     const updatedBoard = await repository.updateBoard(board);
+    if (!updatedBoard) {
+      throw new Error("Board not found");
+    }
     return updatedBoard;
   };
 
@@ -27,7 +30,7 @@ export const useBoard = (repository: BoardRepository = nocoBoardRepository) => {
   };
 
   return {
-    getAllBoards,
+    getBoards,
     createBoard,
     updateBoard,
     deleteBoard,

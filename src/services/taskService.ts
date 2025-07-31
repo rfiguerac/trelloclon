@@ -3,17 +3,20 @@ import { nocoTaskRepository } from "../data/nocoTaskRepository";
 import type { Task } from "../interface/BoardInterface";
 import type { TaskRepository } from "../interface/TaskRepository";
 
-export const useTask = (resository: TaskRepository = nocoTaskRepository) => {
-  const getAllTasks = async () => {
+export const taskService = (
+  resository: TaskRepository = nocoTaskRepository
+) => {
+  const getTasks = async () => {
     const tasks = await resository.getAllTasks();
     return tasks;
   };
 
-  const updateTask = async (task: any) => {
+  const updateTask = async (task: Task) => {
     const updatedTask = await resository.updateTask(task);
+
     return updatedTask;
   };
-  const createTask = async (task: Partial<Task>) => {
+  const createTask = async (task: Omit<Task, "Id">) => {
     const newTask = await resository.createTask(task);
     return newTask;
   };
@@ -23,7 +26,7 @@ export const useTask = (resository: TaskRepository = nocoTaskRepository) => {
   };
 
   return {
-    getAllTasks,
+    getTasks,
     updateTask,
     createTask,
     deleteTask,

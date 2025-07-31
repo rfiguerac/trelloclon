@@ -1,27 +1,17 @@
 import { useEffect, useState } from "react";
 import { CardBoard } from "../components/board/CardBoard";
 import { CreateBoard } from "../components/board/CreateBoard";
-import type { Board } from "../interface/BoardInterface";
-import { useBoard } from "../hooks/useBoard";
+import { useBoardStore } from "../store/boardStore";
 
 export const PrincipalPage = () => {
-  const [boards, setBoards] = useState<Board[]>([]);
   const [showCreateBoard, setShowCreateBoard] = useState(false);
 
-  const { getAllBoards } = useBoard();
-
-  const fetchBoards = async () => {
-    try {
-      const boardData = await getAllBoards();
-      setBoards(boardData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const boards = useBoardStore((state) => state.boards);
+  const fetchBoards = useBoardStore((state) => state.fetchBoards);
 
   useEffect(() => {
     fetchBoards();
-  }, []);
+  }, [fetchBoards]);
 
   const handleAddBoard = () => {
     setShowCreateBoard((prev) => !prev);
@@ -55,9 +45,7 @@ export const PrincipalPage = () => {
         </div>
       </div>
 
-      {showCreateBoard && (
-        <CreateBoard handleAddBoard={handleAddBoard} setBoards={setBoards} />
-      )}
+      {showCreateBoard && <CreateBoard handleAddBoard={handleAddBoard} />}
     </>
   );
 };

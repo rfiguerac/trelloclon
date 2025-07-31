@@ -1,23 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Board } from "../components/board/Board";
-import { useSelecedBoard } from "../contexts/BoardContext";
 import { useEffect, useState } from "react";
 import { CreateBoard } from "../components/board/CreateBoard";
 
 import { ModalDelete } from "../components/ModalDelete";
+import { useBoardStore } from "../store/boardStore";
 
 export const BoardPage = () => {
-  const { selectedBoard } = useSelecedBoard();
+  const { selectedBoard } = useBoardStore();
 
   const navigate = useNavigate();
 
   const [showCreateColumn, setShowCreateColumn] = useState(false);
   const [showUpdateBoard, setShowUpdateBoard] = useState(false);
-  //const [showDeleteBoard, setShowDeleteBoard] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleAddColumn = () => {
+  const handleCloseModal = () => {
     setShowCreateColumn((prev) => !prev);
   };
 
@@ -63,7 +62,7 @@ export const BoardPage = () => {
               </Link>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={handleAddColumn}
+                  onClick={handleCloseModal}
                   className="btn btn-outline btn-xs text-xl py-6 rounded-lg px-4">
                   + Lista
                 </button>
@@ -107,24 +106,24 @@ export const BoardPage = () => {
           </div>
 
           <h2 className="card-title text-3xl md:text-5xl font-bold w-full text-center mt-4 md:w-auto md:text-left md:mt-0">
-            {selectedBoard.Title}
+            {selectedBoard && selectedBoard.Title}
           </h2>
 
           <div className="overflow-x-auto">
             <Board
               showCreateColumn={showCreateColumn}
-              handleAddColumn={handleAddColumn}
+              handleCloseModal={handleCloseModal}
             />
           </div>
         </div>
         {showUpdateBoard && (
           <CreateBoard
-            editBoard={true}
+            isEditMode={true}
             handleAddBoard={() => setShowUpdateBoard(false)}
           />
         )}
 
-        {showDeleteModal && (
+        {showDeleteModal && selectedBoard && (
           <ModalDelete
             handleShowModal={handleShowModal}
             title={selectedBoard.Title}
