@@ -47,14 +47,13 @@ export const CreateBoard = ({
     e.preventDefault();
 
     try {
-      let data;
       if (newBoard.title.trim().length < 3) {
         setError("El título debe tener al menos 3 caracteres.");
         return;
       }
 
       if (isEditMode && selectedBoard) {
-        data = await editBoard({
+        await editBoard({
           Id: selectedBoard.Id,
           Title: newBoard.title,
           description: newBoard.description || "Sin descripción",
@@ -62,7 +61,7 @@ export const CreateBoard = ({
 
         showToast("tablero actualizado", "success");
       } else {
-        data = await addBoard({
+        await addBoard({
           Title: newBoard.title,
           description: newBoard.description || "Sin descripción",
         });
