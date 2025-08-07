@@ -40,7 +40,7 @@ export const BoardPage = () => {
 
   return (
     <div>
-      <div className="card bg-base-100 shadow-sm min-h-[60vh] opacity-90">
+      <div className="card bg-base-200 shadow-sm min-h-[60vh] opacity-90">
         <div className="card-body">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center  md:pl-4 md:pr-4">
             <div className="flex justify-between items-center w-full md:mb-0">
